@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * 모든 요청을 받아서 uri에 따라 컨트롤러 메서드를 호출한다.
  */
-// Dispatcher 경로 지정부분
+// Dispatcher 경로 지정부분!!
 @WebServlet("/mvc/*")
 public class DispatcherServlet extends HttpServlet {
 
