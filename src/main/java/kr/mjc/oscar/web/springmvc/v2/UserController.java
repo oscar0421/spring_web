@@ -17,6 +17,8 @@ import java.util.List;
  * Servlet API를 사용하지 않는 UserController
  */
 @Controller("userControllerV2")
+
+// default URI
 @RequestMapping("/springmvc/v2/user")
 public class UserController {
 
