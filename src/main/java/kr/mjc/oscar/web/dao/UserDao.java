@@ -8,31 +8,34 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Repository
 public class UserDao {
 
-  private static final String LIST_USERS =
-      "select userId, email, name from user order by userId desc limit ?,?";
+  private static final String LIST_USERS
+      = "select userId, email, name from user order by userId desc limit ?,?";
 
-  private static final String ADD_USER =
+  private static final String ADD_USER
+      =
       "insert user(email, password, name) values(:email, sha2(:password,256), :name)";
 
-  private static final String LOGIN =
+  private static final String LOGIN
+      =
       "select userId, email, name from user where (email, password) = (?, sha2(?,256))";
 
-  private static final String GET_USER =
-      "select userId, email, name from user where userId=?";
+  private static final String GET_USER
+      = "select userId, email, name from user where userId=?";
 
-  private static final String UPDATE_EMAIL =
-      "update user set email=:email where userId=:userId";
+  private static final String UPDATE_EMAIL
+      = "update user set email=:email where userId=:userId";
 
-  private static final String UPDATE_PASSWORD =
+  private static final String UPDATE_PASSWORD
+      =
       "update user set password=sha2(:newPassword,256) where userId=:userId and password=sha2(:password,256)";
 
   private JdbcTemplate jdbcTemplate;
@@ -61,8 +64,8 @@ public class UserDao {
    * @return 로그인한 사용자 정보
    * @throws EmptyResultDataAccessException 로그인에 실패할 경우
    */
-  public User login(String email, String password) throws
-      EmptyResultDataAccessException {
+  public User login(String email, String password)
+      throws EmptyResultDataAccessException {
     return jdbcTemplate.queryForObject(LOGIN, rowMapper, email, password);
   }
 

@@ -1,4 +1,4 @@
-<%@ page import="kr.mjc.jacob.web.dao.User" %>
+<%@ page import="kr.mjc.oscar.web.dao.User" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html>

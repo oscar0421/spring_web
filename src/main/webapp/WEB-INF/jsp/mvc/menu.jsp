@@ -1,5 +1,5 @@
 <%@ page import="kr.mjc.oscar.web.dao.User" %>
-<nav><a href="./">홈</a> <a
+<nav><span style="font-weight: bold;">[MVC]</span> <a href="./">홈</a> <a
     href="./mvc/user/userList">사용자</a>
   <a href="./mvc/article/articleList">게시글</a>
   <% User sessionUser = (User) session.getAttribute("USER");

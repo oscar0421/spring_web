@@ -1,4 +1,4 @@
-<%@ page import="kr.mjc.jacob.web.dao.User" %>
+<%@ page import="kr.mjc.oscar.web.dao.User" %>
 <!DOCTYPE html>
 <% User user = (User) session.getAttribute("USER"); %>
 <html>

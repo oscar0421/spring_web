@@ -15,6 +15,7 @@
   </style>
 </head>
 <body>
+<%@ include file="/WEB-INF/jsp/mvc/menu.jsp" %>
 <h3>글수정</h3>
 <% Article article = (Article) request.getAttribute("article"); %>
 <form action="./mvc/article/updateArticle" method="post">

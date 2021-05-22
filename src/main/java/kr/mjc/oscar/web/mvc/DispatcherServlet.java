@@ -12,7 +12,6 @@ import java.io.IOException;
 /**
  * 모든 요청을 받아서 uri에 따라 컨트롤러 메서드를 호출한다.
  */
-// Dispatcher 경로 지정부분!!
 @WebServlet("/mvc/*")
 public class DispatcherServlet extends HttpServlet {
 
@@ -27,7 +26,6 @@ public class DispatcherServlet extends HttpServlet {
                          HttpServletResponse response)
       throws ServletException, IOException {
     String uri = request.getRequestURI();
-
     switch (uri) {
       case "/mvc/user/userList" -> userController.userList(request, response);
       case "/mvc/user/userForm" -> userController.userForm(request, response);

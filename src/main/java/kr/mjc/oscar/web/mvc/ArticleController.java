@@ -37,6 +37,7 @@ public class ArticleController {
     int count = 25;
     int offset = (page - 1) * count;
     List<Article> articleList = articleDao.listArticles(offset, count);
+
     request.setAttribute("articleList", articleList);
     request.getRequestDispatcher("/WEB-INF/jsp/mvc/article/articleList.jsp")
         .forward(request, response);

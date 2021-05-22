@@ -14,6 +14,7 @@
   </style>
 </head>
 <body>
+<%@ include file="/WEB-INF/jsp/mvc/menu.jsp" %>
 <h3>글쓰기</h3>
 <form action="./mvc/article/addArticle" method="post">
   <p><input type="text" name="title" required autofocus/></p>
