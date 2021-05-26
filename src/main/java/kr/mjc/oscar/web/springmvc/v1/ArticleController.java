@@ -37,7 +37,7 @@ public class ArticleController {
    */
   @GetMapping("/articleList") // /springmvc/v1/article/articleList
   public void articleList(HttpServletRequest request,
-                          HttpServletResponse response)
+      HttpServletResponse response)
       throws ServletException, IOException {
     String pageStr = Optional.ofNullable(request.getParameter("page"))
         .orElse("1");
@@ -56,7 +56,7 @@ public class ArticleController {
    */
   @GetMapping("/articleView") // /springmvc/v1/article/articleView
   public void articleView(HttpServletRequest request,
-                          HttpServletResponse response)
+      HttpServletResponse response)
       throws ServletException, IOException {
     int articleId = Integer.parseInt(request.getParameter("articleId"));
     Article article = articleDao.getArticle(articleId);
@@ -71,7 +71,7 @@ public class ArticleController {
    */
   @GetMapping("/articleForm")
   public void articleForm(HttpServletRequest request,
-                          HttpServletResponse response)
+      HttpServletResponse response)
       throws IOException, ServletException {
     HttpSession session = request.getSession();
     // 로그인 체크
@@ -92,7 +92,7 @@ public class ArticleController {
    */
   @GetMapping("/articleEdit")
   public void articleEdit(HttpServletRequest request,
-                          HttpServletResponse response)
+      HttpServletResponse response)
       throws IOException, ServletException {
     HttpSession session = request.getSession();
     // 로그인 체크
@@ -117,17 +117,16 @@ public class ArticleController {
   }
 
   /**
-   * 게시글 등록 액션. 로그인 안했으면 로그인 화면으로 redirect.
+   * 게시글 등록 액션. 로그인 안했으면 400 Bad Request
    */
   @PostMapping("/addArticle")
   public void addArticle(HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
+      HttpServletResponse response) throws IOException {
     HttpSession session = request.getSession();
     // 로그인 체크
     User user = (User) session.getAttribute("USER");
-    if (user == null) { // 로그인 안했으면 로그인 화면으로 redirect
-      response.sendRedirect(
-          request.getContextPath() + "/springmvc/v1/user/loginForm");
+    if (user == null) { // 로그인 안했으면 400 Bad Request
+      response.sendError(Response.SC_BAD_REQUEST);
       return;
     }
     Article article = new Article();
@@ -142,18 +141,16 @@ public class ArticleController {
   }
 
   /**
-   * 게시글 수정 액션. 로그인 안했으면 로그인 화면으로 redirect.
-   * 사용자가 다르면 401 Unauthorized.
+   * 게시글 수정 액션. 로그인 안했거나 사용자가 다르면 400 Bad Request
    */
   @PostMapping("/updateArticle")
   public void updateArticle(HttpServletRequest request,
-                            HttpServletResponse response) throws IOException {
+      HttpServletResponse response) throws IOException {
     HttpSession session = request.getSession();
     // 로그인 체크
     User user = (User) session.getAttribute("USER");
-    if (user == null) { // 로그인 안했으면 로그인 화면으로 redirect
-      response.sendRedirect(
-          request.getContextPath() + "/springmvc/v1/user/loginForm");
+    if (user == null) { // 로그인 안했으면 400 Bad Request
+      response.sendError(Response.SC_BAD_REQUEST);
       return;
     }
 
@@ -169,8 +166,8 @@ public class ArticleController {
           request.getContextPath() +
               "/springmvc/v1/article/articleView?articleId=" +
               article.getArticleId());
-    else // 사용자가 다르면 수정이 안됨. 401 Unauthorized
-      response.sendError(Response.SC_UNAUTHORIZED);
+    else // 사용자가 다르면 수정이 안됨. 400 Bad Request
+      response.sendError(Response.SC_BAD_REQUEST);
   }
 
   /**
@@ -179,7 +176,7 @@ public class ArticleController {
    */
   @GetMapping("/deleteArticle")
   public void deleteArticle(HttpServletRequest request,
-                            HttpServletResponse response) throws IOException {
+      HttpServletResponse response) throws IOException {
     HttpSession session = request.getSession();
     // 로그인 체크
     User user = (User) session.getAttribute("USER");

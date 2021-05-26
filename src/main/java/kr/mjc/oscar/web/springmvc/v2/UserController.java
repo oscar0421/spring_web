@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
  * Servlet API를 사용하지 않는 UserController
  */
 @Controller("userControllerV2")
-
-// default URI
 @RequestMapping("/springmvc/v2/user")
 public class UserController {
 
@@ -35,11 +35,22 @@ public class UserController {
   @GetMapping("/userList")
   public void userList(
       @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "20") int count,
       Model model) {
-    int count = 25;
     int offset = (page - 1) * count;
     List<User> userList = userDao.listUsers(offset, count);
+    int totalCount = userDao.countUsers();
     model.addAttribute("userList", userList);
+    model.addAttribute("totalCount", totalCount);
+  }
+
+  /**
+   * 사용자 정보 화면
+   */
+  @GetMapping("/userInfo")
+  public void userInfo(@RequestParam(required = false) Integer userId,
+      Model model) {
+    model.addAttribute("user", userDao.getUser(userId));
   }
 
   /**
@@ -48,7 +59,7 @@ public class UserController {
    */
   @PostMapping("/addUser")
   public String addUser(@ModelAttribute User user,
-                        RedirectAttributes attributes) {
+      RedirectAttributes attributes) {
     try {
       userDao.addUser(user);
       return "redirect:/springmvc/v2/user/userList";
@@ -64,14 +75,54 @@ public class UserController {
    */
   @PostMapping("/login")
   public String login(@RequestParam String email, @RequestParam String password,
-                      HttpSession session, RedirectAttributes attributes) {
+      @RequestParam(required = false, defaultValue = "/") String returnUrl,
+      HttpSession session, RedirectAttributes attributes) {
     try {
       User user = userDao.login(email, password);
       session.setAttribute("USER", user);
-      return "redirect:/springmvc/v2/user/userInfo";
-    } catch (EmptyResultDataAccessException e) {
+      return "redirect:" + returnUrl; // 로그인 성공할 경우 returnUrl로
+    } catch (EmptyResultDataAccessException e) { // 로그인 실패할 경우
+      attributes.addFlashAttribute("email", email);
       attributes.addFlashAttribute("msg", "Wrong email or password");
-      return "redirect:/springmvc/v2/user/loginForm";
+      return "redirect:/springmvc/v2/user/loginForm?returnUrl=" +
+          URLEncoder.encode(returnUrl, Charset.defaultCharset());
+    }
+  }
+
+  /**
+   * 개인정보 수정 액션
+   */
+  @PostMapping("/updateUser")
+  public String updateUser(User user,
+      @SessionAttribute("USER") User sessionUser,
+      RedirectAttributes attributes) {
+    try {
+      user.setUserId(sessionUser.getUserId());
+      userDao.updateUser(user);
+      // 개인정보 수정 후에 세션 업데이트
+      sessionUser.setEmail(user.getEmail());
+      sessionUser.setName(user.getName());
+      return "redirect:/springmvc/v2/user/myInfo";
+    } catch (DuplicateKeyException e) {
+      attributes.addFlashAttribute("user", user);
+      attributes.addFlashAttribute("msg", "Duplicate email");
+      return "redirect:/springmvc/v2/user/userEdit";
+    }
+  }
+
+  /**
+   * 비밀번호 수정 액션
+   */
+  @PostMapping("/updatePassword")
+  public String updatePassword(String password, String newPassword,
+      @SessionAttribute("USER") User user, RedirectAttributes attributes) {
+    int result =
+        userDao.updatePassword(user.getUserId(), password, newPassword);
+    if (result > 0) {
+      return "redirect:/springmvc/v2/user/myInfo";
+    } else {
+      attributes.addFlashAttribute("msg", "Wrong password");
+      return "redirect:/springmvc/v2/user/passwordForm";
     }
   }
 
