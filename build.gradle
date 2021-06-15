@@ -1,27 +1,36 @@
 plugins {
+  id 'org.springframework.boot' version '2.4.5'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'java'
+  id 'war'
   id "io.freefair.lombok" version "5.3.0"
 }
 
-group 'kr.mjc.oscar'
-version '1.0-SNAPSHOT'
+group = 'kr.mjc.oscar'
+version = '0.0.1-SNAPSHOT'
 
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  implementation 'org.mariadb.jdbc:mariadb-java-client:2.+'
-  implementation 'commons-io:commons-io:+'
+  // Spring MVC
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  // Spring JDBC
+  implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+  // Live reload
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  // For stand-alone Tomcat
+  providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
-  // spring에서 필요한 라이브러리들
-  implementation 'org.springframework:spring-context:5.+'
-  implementation 'org.springframework:spring-jdbc:5.+'
-  implementation 'javax.annotation:javax.annotation-api:1.+'
+  // JSP (JSTL, EL)
+  providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+  runtimeOnly 'javax.servlet:jstl'
 
-  // log4j2 - slf4j bridge (slf4j binding log4j2)
-  //implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.+'
+  // MariaDB JDBC Driver
+  runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
-  // logback
-  implementation 'ch.qos.logback:logback-classic:1.2.+'
+  // OWASP Java Encoder
+  implementation 'org.owasp.encoder:encoder:1.2.+'
+  implementation 'org.owasp.encoder:encoder-jsp:1.2.+'
 }
